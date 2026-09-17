@@ -34,6 +34,18 @@ app.get("/listings", async (req, res) => {
   }
 });
 
+// Listing: new route
+app.get("/listings/new", async (req, res) => {
+  res.render("listings/new.ejs");
+});
+
+// Listing: create route
+app.post("/listings/create", async (req, res) => {
+  let { listing } = req.body;
+  Listing.insertOne(listing);
+  res.redirect("/listings");
+});
+
 // Listing: show route
 app.get("/listings/:id", async (req, res) => {
   try {

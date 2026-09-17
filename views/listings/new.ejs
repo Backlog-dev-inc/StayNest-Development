@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>New Listing</title>
+</head>
+
+<body>
+  <h3>Create a New Listing!</h3>
+
+  <form method='post' action="/listings/create" novalidate>
+    <label style="display: block;">
+      Title: &nbsp;<input type="text" name="listing[title]" placeholder="enter title">
+    </label><br>
+
+    <label style="display: block;">
+      Description: <br><br>
+      <textarea name="listing[description]" placeholder="enter description"></textarea>
+    </label><br>
+
+    <label style="display: block;">
+      Price: &nbsp;&#8377;<input type="number" name="listing[price]" placeholder="enter price">
+    </label><br>
+
+    <label style="display: block;">
+      Location: &nbsp;<input type="text" name="listing[location]" placeholder="enter location">
+    </label><br>
+
+    <label style="display: block;">
+      Country: &nbsp;<input type="text" name="listing[country]" placeholder="enter country">
+    </label><br>
+
+    <button>Create</button>
+  </form>
+</body>
+
+</html>
