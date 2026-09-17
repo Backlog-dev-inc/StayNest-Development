@@ -19,7 +19,7 @@
 
   <a href="/listings/edit/<%= listing._id %>">Edit</a>
   &nbsp;&nbsp;
-  <form style="display: inline;" action="">
+  <form style="display: inline;" method="POST" action="/listings/delete/<%= listing._id %>?_method=DELETE">
     <button>Delete</button>
   </form>
 </body>

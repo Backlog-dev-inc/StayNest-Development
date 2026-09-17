@@ -80,8 +80,19 @@ app.put("/listings/update/:id", async (req, res) => {
     let { id } = req.params;
     let updatedListing = await Listing.findByIdAndUpdate(id, req.body.listing, {
       runValidators: true,
-      new: true,
+      returnDocument: "after",
     });
+    res.redirect("/listings");
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+// Listing: delete route
+app.delete("/listings/delete/:id", async (req, res) => {
+  try {
+    let { id } = req.params;
+    await Listing.findByIdAndDelete(id);
     res.redirect("/listings");
   } catch (err) {
     console.log(err);
