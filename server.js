@@ -38,7 +38,6 @@ app.get("/listings", async (req, res) => {
 app.get("/listings/:id", async (req, res) => {
   try {
     let { id } = req.params;
-    res.send("This is root path.");
     const listing = await Listing.findById(id);
     res.render("listings/show.ejs", { listing });
   } catch (err) {
