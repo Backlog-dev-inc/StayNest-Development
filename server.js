@@ -10,6 +10,7 @@ async function main() {
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
+app.use(express.urlencoded({ extended: true }));
 
 main()
   .then(() => {
@@ -28,6 +29,18 @@ app.get("/listings", async (req, res) => {
   try {
     let allListings = await Listing.find();
     res.render("listings/index.ejs", { allListings });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+// Listing: show route
+app.get("/listings/:id", async (req, res) => {
+  try {
+    let { id } = req.params;
+    res.send("This is root path.");
+    const listing = await Listing.findById(id);
+    res.render("listings/show.ejs", { listing });
   } catch (err) {
     console.log(err);
   }
