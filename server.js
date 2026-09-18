@@ -4,16 +4,24 @@ const mongoose = require("mongoose");
 const Listing = require("./models/listing.js");
 const path = require("path");
 const override = require("method-override");
+const ejsMate = require("ejs-mate");
 
+// Connect to the StayNest MongoDB database.
 async function main() {
   await mongoose.connect("mongodb://127.0.0.1:27017/StayNest");
 }
 
+// Configure the template engine and directory used for view files.
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
+app.engine("ejs", ejsMate);
+app.use(express.static(path.join(__dirname, "public")));
+
+// Parse form data and allow HTML forms to submit PUT and DELETE requests.
 app.use(express.urlencoded({ extended: true }));
 app.use(override("_method"));
 
+// Establish the database connection before handling application requests.
 main()
   .then(() => {
     console.log("connected to DB");
@@ -22,6 +30,7 @@ main()
     console.log(err);
   });
 
+// Health-check route for the application root.
 app.get("/", (req, res) => {
   res.send("This is root path.");
 });
@@ -99,6 +108,7 @@ app.delete("/listings/delete/:id", async (req, res) => {
   }
 });
 
+// Start the server and listen for incoming requests.
 app.listen(3300, "0.0.0.0", () => {
   console.log("server is listening on port: 3300");
 });
