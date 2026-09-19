@@ -24,6 +24,8 @@
 .nav-link.active:hover {
   text-decoration: underline;
   color: #ff385c;
+  transform: scale(1.1) translateY(-1px);
+  transform: all 0.5s ease;
 }
 
 .btn {
@@ -33,4 +35,41 @@
   min-width: 1rem;
   padding: 0.5rem;
   font-size: 0.85rem;
+}
+
+/* Footer */
+footer {
+  border-top: #33363854 1px solid;
+  height: 15vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #dee2e6;
+  /* gap: 1rem; */
+  justify-content: center;
+}
+
+footer div {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.social-links,
+.info-links,
+.corp {
+  color: #000000ad;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.85rem;
+}
+
+.social-links {
+  font-size: 1.15rem;
+}
+
+.info-links:hover {
+  color: black;
+  text-decoration: underline;
 }
