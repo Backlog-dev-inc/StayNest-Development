@@ -1,0 +1,36 @@
+.navbar-brand {
+  font-size: 2.75rem !important;
+  color: #ff385c !important;
+}
+
+.container-fluid,
+.navbar {
+  height: fit-content;
+  min-height: 3rem;
+  background-color: white;
+}
+
+.navbar-toggler {
+  box-shadow: none !important;
+}
+
+.navbar-nav {
+  font-size: 1rem;
+  text-align: center;
+  gap: 0.5rem;
+  align-items: baseline;
+}
+
+.nav-link.active:hover {
+  text-decoration: underline;
+  color: #ff385c;
+}
+
+.btn {
+  width: fit-content;
+  background-color: #ff385c !important;
+  color: #ffffff !important;
+  min-width: 1rem;
+  padding: 0.5rem;
+  font-size: 0.85rem;
+}
