@@ -58,6 +58,7 @@ app.post("/listings/create", async (req, res) => {
     res.redirect("/listings");
   } catch (err) {
     console.log(err);
+    res.redirect("/listings");
   }
 });
 
@@ -91,7 +92,7 @@ app.put("/listings/update/:id", async (req, res) => {
       runValidators: true,
       returnDocument: "after",
     });
-    res.redirect("/listings");
+    res.redirect(`/listings/${id}`);
   } catch (err) {
     console.log(err);
   }

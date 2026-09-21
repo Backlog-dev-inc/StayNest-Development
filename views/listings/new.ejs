@@ -2,30 +2,55 @@
 <% layout('./layouts/boilerplate') %>
 
 <body>
-  <h3>Create a New Listing!</h3>
 
-  <form method='post' action="/listings/create" novalidate>
-    <label style="display: block;">
-      Title: &nbsp;<input type="text" name="listing[title]" placeholder="enter title">
-    </label><br>
+  <div class="row">
+    <div class="col col-lg-10 offset-md-2">
+      <form method='post' action="/listings/create" class="new-form">
+        <h3>Create a New Listing!</h3><br>
+        <div class="row row-cols-md-2 row-cols-1">
+          <div class="col col-md-4">
+            <label style="display: block;" class="form-label mb-2">
+              Title: &nbsp;<input type="text" name="listing[title]" placeholder="enter title" class="form-control">
+            </label>
+          </div>
 
-    <label style="display: block;">
-      Description: <br><br>
-      <textarea name="listing[description]" placeholder="enter description"></textarea>
-    </label><br>
+          <div class="col col-md-4">
+            <label style="display: block;" class="form-label mb-2">
+              Price:<input class="form-control" type="number" name="listing[price]" placeholder="enter price (in ₹/night)">
+            </label>
+          </div>
+        </div>
 
-    <label style="display: block;">
-      Price: &nbsp;&#8377;<input type="number" name="listing[price]" placeholder="enter price">
-    </label><br>
+        <div class="row">
+          <label class="form-label mb-2 col-md-8 col">
+            Description:
+            <textarea class="form-control" name="listing[description]" placeholder="enter description"></textarea>
+          </label>
+        </div>
 
-    <label style="display: block;">
-      Location: &nbsp;<input type="text" name="listing[location]" placeholder="enter location">
-    </label><br>
+        <div class="row">
+          <label class="form-label mb-2 col-md-8 col">
+            Image Link:
+            <input type="text" name="listing[image]" class="form-control" placeholder="enter image URL/Link">
+          </label>
+        </div>
 
-    <label style="display: block;">
-      Country: &nbsp;<input type="text" name="listing[country]" placeholder="enter country">
-    </label><br>
+        <div class="row row-cols-md-2 row-cols-1">
+          <label style="display: block;" class="form-label mb-2 col col-md-4">
+            Location: &nbsp;<input class="form-control" type="text" name="listing[location]" placeholder="enter location">
+          </label>
 
-    <button>Create</button>
-  </form>
+          <label style="display: block;" class="form-label mb-2 col col-md-4">
+            Country: &nbsp;<input class="form-control" type="text" name="listing[country]" placeholder="enter country">
+          </label>
+        </div>
+
+        <br>
+
+        <button class="btn">Create</button>
+      </form>
+    </div>
+
+  </div>
+
 </body>

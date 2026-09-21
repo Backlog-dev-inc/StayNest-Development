@@ -10,10 +10,10 @@ const listingSchema = new Schema({
   image: {
     type: String,
     default:
-      "https://drive.google.com/uc?export=view&id=1CbYfc6knWCwouAv-ZaVzyCpi5i4GSFM5",
+      "https://cdn.jsdelivr.net/gh/Backlog-dev-inc/assets@latest/no-imager.jpg",
     set: (v) =>
       v === ""
-        ? "https://drive.google.com/uc?export=view&id=1CbYfc6knWCwouAv-ZaVzyCpi5i4GSFM5"
+        ? "https://cdn.jsdelivr.net/gh/Backlog-dev-inc/assets@latest/no-imager.jpg"
         : v,
   },
   price: Number,
