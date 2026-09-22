@@ -43,8 +43,8 @@ section {
   width: fit-content;
   background-color: #ff385c !important;
   color: #ffffff !important;
-  min-width: 1rem;
-  padding: 0.5rem;
+  min-width: 1.5rem;
+  padding: 0.5rem 0.65rem;
   font-size: 0.85rem;
 }
 
