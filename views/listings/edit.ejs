@@ -5,19 +5,25 @@
 
   <div class="row">
     <div class="col col-lg-10 offset-md-2">
-      <form method='post' action="/listings/update/<%= listing._id %>?_method=PUT" class="new-form">
+      <form method='post' action="/listings/update/<%= listing._id %>?_method=PUT" class="new-form needs-validation" novalidate>
         <h3>Edit Listing: <%= listing._id %></h3><br>
         <div class="row row-cols-md-2 row-cols-1">
           <div class="col col-md-4">
             <label style="display: block;" class="form-label mb-2">
-              Title: &nbsp;<input type="text" name="listing[title]" placeholder="enter title" class="form-control" value="<%= listing.title %>">
+              Title: &nbsp;<input type="text" name="listing[title]" placeholder="enter title" class="form-control" required value="<%= listing.title %>">
             </label>
+            <div class="invalid-feedback">
+              title is required.
+            </div>
           </div>
 
           <div class="col col-md-4">
             <label style="display: block;" class="form-label mb-2">
-              Price:<input class="form-control" type="number" name="listing[price]" placeholder="enter price (in ₹/night)" value="<%= listing.price %>">
+              Price:<input class="form-control" required type="number" name="listing[price]" placeholder="enter price (in ₹/night)" value="<%= listing.price %>">
             </label>
+            <div class="invalid-feedback">
+              price is required.
+            </div>
           </div>
         </div>
 
@@ -37,11 +43,19 @@
 
         <div class="row row-cols-md-2 row-cols-1">
           <label style="display: block;" class="form-label mb-2 col col-md-4">
-            Location: &nbsp;<input class="form-control" type="text" name="listing[location]" placeholder="enter location" value="<%= listing.location %>">
+            Location: &nbsp;<input class="form-control" required type="text" name="listing[location]" placeholder="enter location" value="<%= listing.location %>">
+
+            <div class="invalid-feedback">
+              location is required.
+            </div>
           </label>
 
           <label style="display: block;" class="form-label mb-2 col col-md-4">
-            Country: &nbsp;<input class="form-control" type="text" name="listing[country]" placeholder="enter country" value="<%= listing.country %>">
+            Country: &nbsp;<input class="form-control" required type="text" name="listing[country]" placeholder="enter country" value="<%= listing.country %>">
+
+            <div class="invalid-feedback">
+              country is required.
+            </div>
           </label>
         </div>
 
@@ -52,7 +66,6 @@
     </div>
 
   </div>
+  <script src="/js/invalid.js"></script>
 
 </body>
-
-</html>

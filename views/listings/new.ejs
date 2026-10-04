@@ -5,18 +5,24 @@
 
   <div class="row">
     <div class="col col-lg-10 offset-md-2">
-      <form method='post' action="/listings/create" class="new-form">
+      <form method='post' action="/listings/create" class="new-form needs-validation" novalidate>
         <h3>Create a New Listing!</h3><br>
         <div class="row row-cols-md-2 row-cols-1">
           <div class="col col-md-4">
             <label style="display: block;" class="form-label mb-2">
-              Title: &nbsp;<input spellcheck="false" spellcheck="false" type="text" name="listing[title]" placeholder="enter title" class="form-control">
+              Title: &nbsp;<input spellcheck="false" type="text" name="listing[title]" placeholder="enter title" class="form-control" required>
+              <div class="invalid-feedback">
+                title is required.
+              </div>
             </label>
           </div>
 
           <div class="col col-md-4">
             <label style="display: block;" class="form-label mb-2">
-              Price:<input spellcheck="false" class="form-control" type="number" name="listing[price]" placeholder="enter price (in ₹/night)">
+              Price:<input spellcheck="false" class="form-control" required type="number" name="listing[price]" placeholder="enter price (in ₹/night)">
+              <div class="invalid-feedback">
+                price is required.
+              </div>
             </label>
           </div>
         </div>
@@ -37,11 +43,17 @@
 
         <div class="row row-cols-md-2 row-cols-1">
           <label style="display: block;" class="form-label mb-2 col col-md-4">
-            Location: &nbsp;<input spellcheck="false" class="form-control" type="text" name="listing[location]" placeholder="enter location">
+            Location: &nbsp;<input spellcheck="false" class="form-control" required type="text" name="listing[location]" placeholder="enter location">
+            <div class="invalid-feedback">
+              location is required.
+            </div>
           </label>
 
           <label style="display: block;" class="form-label mb-2 col col-md-4">
-            Country: &nbsp;<input spellcheck="false" class="form-control" type="text" name="listing[country]" placeholder="enter country">
+            Country: &nbsp;<input spellcheck="false" class="form-control" required type="text" name="listing[country]" placeholder="enter country">
+            <div class="invalid-feedback">
+              country is required.
+            </div>
           </label>
         </div>
 
@@ -52,5 +64,7 @@
     </div>
 
   </div>
+
+  <script src="/js/invalid.js"></script>
 
 </body>
