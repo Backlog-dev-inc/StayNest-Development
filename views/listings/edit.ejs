@@ -11,19 +11,19 @@
           <div class="col col-md-4">
             <label style="display: block;" class="form-label mb-2">
               Title: &nbsp;<input type="text" name="listing[title]" placeholder="enter title" class="form-control" required value="<%= listing.title %>">
+              <div class="invalid-feedback">
+                title is required.
+              </div>
             </label>
-            <div class="invalid-feedback">
-              title is required.
-            </div>
           </div>
 
           <div class="col col-md-4">
             <label style="display: block;" class="form-label mb-2">
-              Price:<input class="form-control" required type="number" name="listing[price]" placeholder="enter price (in ₹/night)" value="<%= listing.price %>">
+              Price:<input class="form-control" required type="number" name="listing[price]" placeholder="enter price (in ₹/night)" value="<%= listing.price %>" min="0">
+              <div class="invalid-feedback">
+                price is required.
+              </div>
             </label>
-            <div class="invalid-feedback">
-              price is required.
-            </div>
           </div>
         </div>
 

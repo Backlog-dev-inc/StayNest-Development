@@ -23,6 +23,16 @@
             // If the field is broken, make it red
             input.classList.add("is-invalid");
 
+            if (input.name === "listing[price]") {
+              const feedback =
+                input.parentElement.querySelector(".invalid-feedback");
+              if (feedback) {
+                feedback.textContent = input.validity.rangeUnderflow
+                  ? "price cannot be negative."
+                  : "price is required.";
+              }
+            }
+
             // Remove the red style as soon as the user changes/fixes the text
             input.addEventListener("input", () => {
               if (input.checkValidity()) {

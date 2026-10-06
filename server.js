@@ -5,6 +5,9 @@ const Listing = require("./models/listing.js");
 const path = require("path");
 const override = require("method-override");
 const ejsMate = require("ejs-mate");
+const servErr = require("./utils/servErr.js");
+const wrapAsync = require("./utils/wrapAsync.js");
+const listingSchema = require("./schema.js");
 
 // Connect to the StayNest MongoDB database.
 async function main() {
@@ -27,86 +30,107 @@ main()
     console.log("connected to DB");
   })
   .catch((err) => {
-    console.log(err);
+    console.log(`DB connection failed: ${err.message}`);
   });
 
-// Health-check route for the application root.
-app.get("/", (req, res) => {
-  res.send("This is root path.");
-});
+const schemaValidate = (req, res, next) => {
+  let { error } = listingSchema.validate(req.body);
+  if (error) {
+    throw new servErr(400, error);
+  } else {
+    next();
+  }
+};
 
 // Listing: index route
-app.get("/listings", async (req, res) => {
-  try {
-    let allListings = await Listing.find();
+app.get(
+  "/listings",
+  wrapAsync(async (req, res, next) => {
+    let allListings = await Listing.find().catch(() => {
+      throw new servErr(500, "Something went wrong!");
+    });
     res.render("listings/index.ejs", { allListings });
-  } catch (err) {
-    console.log(err);
-  }
-});
+  }),
+);
 
 // Listing: new route
-app.get("/listings/new", async (req, res) => {
+app.get("/listings/new", (req, res) => {
   res.render("listings/new.ejs");
 });
 
 // Listing: create route
-app.post("/listings/create", async (req, res) => {
-  try {
+app.post(
+  "/listings/create",
+  schemaValidate,
+  wrapAsync(async (req, res, next) => {
     let { listing } = req.body;
+    if (!listing) {
+      throw new servErr(400, "Invalid request is sent: 'listing' is required.");
+    }
     await Listing.insertOne(listing);
     res.redirect("/listings");
-  } catch (err) {
-    console.log(err);
-    res.redirect("/listings");
-  }
-});
+  }),
+);
 
 // Listing: show route
-app.get("/listings/:id", async (req, res) => {
-  try {
+app.get(
+  "/listings/:id",
+  wrapAsync(async (req, res, next) => {
     let { id } = req.params;
-    let listing = await Listing.findById(id);
+    let listing = await Listing.findById(id).catch((err) => {
+      throw new servErr(400, "Page Not Found");
+    });
     res.render("listings/show.ejs", { listing });
-  } catch (err) {
-    console.log(err);
-  }
-});
+  }),
+);
 
 // Listing: edit route
-app.get("/listings/edit/:id", async (req, res) => {
-  try {
+app.get(
+  "/listings/edit/:id",
+  wrapAsync(async (req, res, next) => {
     let { id } = req.params;
-    let listing = await Listing.findById(id);
+    let listing = await Listing.findById(id).catch((err) => {
+      throw new servErr(404, "Page Not Found");
+    });
     res.render("listings/edit.ejs", { listing });
-  } catch (err) {
-    console.log(err);
-  }
-});
+  }),
+);
 
 // Listing: update route
-app.put("/listings/update/:id", async (req, res) => {
-  try {
+app.put(
+  "/listings/update/:id",
+  schemaValidate,
+  wrapAsync(async (req, res, next) => {
     let { id } = req.params;
     let updatedListing = await Listing.findByIdAndUpdate(id, req.body.listing, {
       runValidators: true,
       returnDocument: "after",
+    }).catch((err) => {
+      throw new servErr(404, "Page Not Found");
     });
     res.redirect(`/listings/${id}`);
-  } catch (err) {
-    console.log(err);
-  }
-});
+  }),
+);
 
 // Listing: delete route
-app.delete("/listings/delete/:id", async (req, res) => {
-  try {
+app.delete(
+  "/listings/delete/:id",
+  wrapAsync(async (req, res, next) => {
     let { id } = req.params;
-    await Listing.findByIdAndDelete(id);
+    await Listing.findByIdAndDelete(id).catch((err) => {
+      throw new servErr(404, "Page Not Found");
+    });
     res.redirect("/listings");
-  } catch (err) {
-    console.log(err);
-  }
+  }),
+);
+
+app.all("/{*splat}", (req, res) => {
+  res.status(404).send("<h1>Page Not Found</h1>");
+});
+
+app.use((err, req, res, next) => {
+  let { statusCode = 500, message = "Something went wrong" } = err;
+  res.status(statusCode).send(`<h1>${message}</h1>`);
 });
 
 // Start the server and listen for incoming requests.
