@@ -118,3 +118,22 @@ footer div {
 .new-form {
   margin-left: 1rem;
 }
+
+.error {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  margin-top: 5rem;
+}
+
+.error img {
+  width: 25rem;
+  max-width: 100%;
+  opacity: 0.75;
+}
+
+.error p {
+  color: #000000ad;
+}

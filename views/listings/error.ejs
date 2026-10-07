@@ -1,0 +1,27 @@
+<% title = 'StayNEST | Error' %>
+<% layout('./layouts/boilerplate') %>
+
+<body>
+  <div class="error">
+    <img src="/images/<%= statusCode %>.png">
+    <% if (statusCode === 404) { %>
+    <h1><b>Oops! Page Not Found</b></h1>
+    <% } else if (statusCode === 500) { %>
+    <h1><b>Something Went Wrong</b></h1>
+    <% } else if (statusCode === 400) { %>
+    <h1><b>Invalid Request</b></h1>
+    <% } %>
+    <p>
+      <%= message %>
+      </br>
+      <% if (statusCode === 500) { %>
+      <span>Please try again in a moment.</span>
+      <% } else if (statusCode===404) { %>
+      <span>Let's get you back on track</span>
+      <% } else if (statusCode===400) { %>
+      <span>Please check the submitted data.</span>
+      <% } %>
+    </p>
+    <a href="/listings" role="button" class="btn"><i class="i-home me-2"></i>Go to Home</a>
+  </div>
+</body>

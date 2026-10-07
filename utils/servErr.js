@@ -1,5 +1,8 @@
 class servErr extends Error {
-  constructor(statusCode, message) {
+  constructor(
+    statusCode = 500,
+    message = "Something unexpected happened on our side.",
+  ) {
     super();
     this.statusCode = statusCode;
     this.message = message;

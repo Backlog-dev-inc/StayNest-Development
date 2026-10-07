@@ -13,6 +13,27 @@ const listingSchema = require("./schema.js");
 async function main() {
   await mongoose.connect("mongodb://127.0.0.1:27017/StayNest");
 }
+const validateDB = (req, res, next) => {
+  dbReady
+    .then((connected) => {
+      if (connected) {
+        next();
+      } else {
+        next(new servErr());
+      }
+    })
+    .catch(next);
+};
+
+const schemaValidate = (req, res, next) => {
+  let { error } = listingSchema.validate(req.body);
+  if (error) {
+    console.log(error);
+    throw new servErr(400, error.message);
+  } else {
+    next();
+  }
+};
 
 // Configure the template engine and directory used for view files.
 app.set("view engine", "ejs");
@@ -23,31 +44,14 @@ app.use(express.static(path.join(__dirname, "public")));
 // Parse form data and allow HTML forms to submit PUT and DELETE requests.
 app.use(express.urlencoded({ extended: true }));
 app.use(override("_method"));
-
-// Establish the database connection before handling application requests.
-main()
-  .then(() => {
-    console.log("connected to DB");
-  })
-  .catch((err) => {
-    console.log(`DB connection failed: ${err.message}`);
-  });
-
-const schemaValidate = (req, res, next) => {
-  let { error } = listingSchema.validate(req.body);
-  if (error) {
-    throw new servErr(400, error);
-  } else {
-    next();
-  }
-};
+app.use(validateDB);
 
 // Listing: index route
 app.get(
   "/listings",
   wrapAsync(async (req, res, next) => {
     let allListings = await Listing.find().catch(() => {
-      throw new servErr(500, "Something went wrong!");
+      throw new servErr();
     });
     res.render("listings/index.ejs", { allListings });
   }),
@@ -64,10 +68,9 @@ app.post(
   schemaValidate,
   wrapAsync(async (req, res, next) => {
     let { listing } = req.body;
-    if (!listing) {
-      throw new servErr(400, "Invalid request is sent: 'listing' is required.");
-    }
-    await Listing.insertOne(listing);
+    await Listing.insertOne(listing).catch(() => {
+      throw new servErr();
+    });
     res.redirect("/listings");
   }),
 );
@@ -78,7 +81,7 @@ app.get(
   wrapAsync(async (req, res, next) => {
     let { id } = req.params;
     let listing = await Listing.findById(id).catch((err) => {
-      throw new servErr(400, "Page Not Found");
+      throw new servErr(404, "Page Not Found");
     });
     res.render("listings/show.ejs", { listing });
   }),
@@ -125,15 +128,29 @@ app.delete(
 );
 
 app.all("/{*splat}", (req, res) => {
-  res.status(404).send("<h1>Page Not Found</h1>");
+  throw new servErr(404, "Page Not Found");
 });
 
 app.use((err, req, res, next) => {
-  let { statusCode = 500, message = "Something went wrong" } = err;
-  res.status(statusCode).send(`<h1>${message}</h1>`);
+  let { statusCode, message } = err;
+  if (statusCode == 404) {
+    message =
+      "The page you're looking for doesn't exist or might have been moved.";
+  }
+  res.status(statusCode).render("listings/error.ejs", { statusCode, message });
 });
 
 // Start the server and listen for incoming requests.
+const dbReady = main()
+  .then(() => {
+    console.log("connected to DB");
+    return true;
+  })
+  .catch((err) => {
+    console.log(`DB connection failed: ${err.message}`);
+    return false;
+  });
+
 app.listen(3300, "0.0.0.0", () => {
   console.log("server is listening on port: 3300");
 });
