@@ -50,7 +50,8 @@ app.use(validateDB);
 app.get(
   "/listings",
   wrapAsync(async (req, res, next) => {
-    let allListings = await Listing.find().catch(() => {
+    let allListings = await Listing.find().catch((err) => {
+      console.log(err);
       throw new servErr();
     });
     res.render("listings/index.ejs", { allListings });
@@ -68,7 +69,8 @@ app.post(
   schemaValidate,
   wrapAsync(async (req, res, next) => {
     let { listing } = req.body;
-    await Listing.insertOne(listing).catch(() => {
+    await Listing.insertOne(listing).catch((err) => {
+      console.log(err);
       throw new servErr();
     });
     res.redirect("/listings");
@@ -81,6 +83,7 @@ app.get(
   wrapAsync(async (req, res, next) => {
     let { id } = req.params;
     let listing = await Listing.findById(id).catch((err) => {
+      console.log(err);
       throw new servErr(404, "Page Not Found");
     });
     res.render("listings/show.ejs", { listing });
@@ -93,6 +96,7 @@ app.get(
   wrapAsync(async (req, res, next) => {
     let { id } = req.params;
     let listing = await Listing.findById(id).catch((err) => {
+      console.log(err);
       throw new servErr(404, "Page Not Found");
     });
     res.render("listings/edit.ejs", { listing });
@@ -109,6 +113,7 @@ app.put(
       runValidators: true,
       returnDocument: "after",
     }).catch((err) => {
+      console.log(err);
       throw new servErr(404, "Page Not Found");
     });
     res.redirect(`/listings/${id}`);
@@ -121,6 +126,7 @@ app.delete(
   wrapAsync(async (req, res, next) => {
     let { id } = req.params;
     await Listing.findByIdAndDelete(id).catch((err) => {
+      console.log(err);
       throw new servErr(404, "Page Not Found");
     });
     res.redirect("/listings");
@@ -132,10 +138,13 @@ app.all("/{*splat}", (req, res) => {
 });
 
 app.use((err, req, res, next) => {
-  let { statusCode, message } = err;
+  let { statusCode = 500, message } = err;
+  console.log(message);
   if (statusCode == 404) {
     message =
       "The page you're looking for doesn't exist or might have been moved.";
+  } else if (statusCode == 500) {
+    message = "Something unexpected happened on our side.";
   }
   res.status(statusCode).render("listings/error.ejs", { statusCode, message });
 });
