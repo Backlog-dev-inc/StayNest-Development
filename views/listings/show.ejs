@@ -21,6 +21,36 @@
       <form style="display: inline;" method="POST" action="/listings/delete/<%= listing._id %>?_method=DELETE">
         <button style="background-color: #1a0606 !important;" class="btn">Delete</button>
       </form>
+
+      <!-- Dialog Box -->
+      <button type="button" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Write a review</button>
+
+      <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" style="display: none;" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="staticBackdropLabel">Leave Feedback</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form>
+                <label class="form-label" for="rating">
+                  <h5>Rating</h5>
+                </label>
+                <input name="review[rating]" type="range" min="1" max="5" class="form-range">
+
+                <label for="comment">Review</label>
+                <textarea class="form-control" name="review[comment]" id="comment" placeholder="Tell us about your experience..." rows="5"></textarea>
+
+                <div class="modal-footer">
+                  <button type="button" class="btn" data-bs-dismiss="modal">Submit</button>
+                </div>
+              </form>
+            </div>
+
+          </div>
+        </div>
+      </div>
     </div>
 
   </div>

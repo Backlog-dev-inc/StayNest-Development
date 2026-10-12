@@ -119,6 +119,7 @@ footer div {
   margin-left: 1rem;
 }
 
+/* Error page */
 .error {
   display: flex;
   flex-direction: column;
@@ -136,4 +137,21 @@ footer div {
 
 .error p {
   color: #000000ad;
+}
+
+/* Show Page */
+.btn-link {
+  background: none !important;
+  color: #ff385c !important;
+  transform: translateY(3px);
+  padding: 0;
+  margin: 0.75rem;
+  font-size: 1.015rem;
+  text-decoration: none;
+  transition: all 0.1s ease;
+
+  &:hover {
+    text-decoration: underline;
+    font-weight: 600;
+  }
 }

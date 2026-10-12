@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
 const Listing = require("./models/listing.js");
+const Review = require("./models/review.js");
 const path = require("path");
 const override = require("method-override");
 const ejsMate = require("ejs-mate");
