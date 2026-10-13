@@ -51,10 +51,7 @@ app.use(validateDB);
 app.get(
   "/listings",
   wrapAsync(async (req, res, next) => {
-    let allListings = await Listing.find().catch((err) => {
-      console.log(err);
-      throw new servErr();
-    });
+    let allListings = await Listing.find();
     res.render("listings/index.ejs", { allListings });
   }),
 );
@@ -69,11 +66,8 @@ app.post(
   "/listings/create",
   schemaValidate,
   wrapAsync(async (req, res, next) => {
-    let { listing } = req.body;
-    await Listing.insertOne(listing).catch((err) => {
-      console.log(err);
-      throw new servErr();
-    });
+    let newListing = new Listing(req.body.listing);
+    await newListing.save();
     res.redirect("/listings");
   }),
 );
@@ -82,11 +76,10 @@ app.post(
 app.get(
   "/listings/:id",
   wrapAsync(async (req, res, next) => {
-    let { id } = req.params;
-    let listing = await Listing.findById(id).catch((err) => {
-      console.log(err);
+    let listing = await Listing.findById(req.params.id);
+    if (!listing) {
       throw new servErr(404, "Page Not Found");
-    });
+    }
     res.render("listings/show.ejs", { listing });
   }),
 );
@@ -95,11 +88,10 @@ app.get(
 app.get(
   "/listings/edit/:id",
   wrapAsync(async (req, res, next) => {
-    let { id } = req.params;
-    let listing = await Listing.findById(id).catch((err) => {
-      console.log(err);
+    let listing = await Listing.findById(req.params.id);
+    if (!listing) {
       throw new servErr(404, "Page Not Found");
-    });
+    }
     res.render("listings/edit.ejs", { listing });
   }),
 );
@@ -109,14 +101,17 @@ app.put(
   "/listings/update/:id",
   schemaValidate,
   wrapAsync(async (req, res, next) => {
-    let { id } = req.params;
-    let updatedListing = await Listing.findByIdAndUpdate(id, req.body.listing, {
-      runValidators: true,
-      returnDocument: "after",
-    }).catch((err) => {
-      console.log(err);
-      throw new servErr(404, "Page Not Found");
-    });
+    let updatedListing = await Listing.findByIdAndUpdate(
+      req.params.id,
+      req.body.listing,
+      {
+        runValidators: true,
+        returnDocument: "after",
+      },
+    );
+    if (!updatedListing) {
+      throw servErr(404, "Page Not Found");
+    }
     res.redirect(`/listings/${id}`);
   }),
 );
@@ -125,11 +120,10 @@ app.put(
 app.delete(
   "/listings/delete/:id",
   wrapAsync(async (req, res, next) => {
-    let { id } = req.params;
-    await Listing.findByIdAndDelete(id).catch((err) => {
-      console.log(err);
+    let deletedListing = await Listing.findByIdAndDelete(req.params.id);
+    if (!deletedListing) {
       throw new servErr(404, "Page Not Found");
-    });
+    }
     res.redirect("/listings");
   }),
 );
@@ -139,10 +133,10 @@ app.post(
   "/listings/:id/review",
   wrapAsync(async (req, res) => {
     let newReview = new Review(req.body.review);
-    let listing = await Listing.findById(req.params.id).catch((err) => {
-      console.log(err);
+    let listing = await Listing.findById(req.params.id);
+    if (!listing) {
       throw new servErr(404, "Page Not Found");
-    });
+    }
 
     await newReview.save();
     listing.reviews.push(newReview);
