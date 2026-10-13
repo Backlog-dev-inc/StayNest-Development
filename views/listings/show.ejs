@@ -33,17 +33,17 @@
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-              <form>
+              <form action="/listings/<%= listing.id %>/review" method="post">
                 <label class="form-label" for="rating">
                   <h5>Rating</h5>
                 </label>
                 <input name="review[rating]" type="range" min="1" max="5" class="form-range">
 
-                <label for="comment">Review</label>
+                <label class="form-label" for="comment">Review</label>
                 <textarea class="form-control" name="review[comment]" id="comment" placeholder="Tell us about your experience..." rows="5"></textarea>
 
                 <div class="modal-footer">
-                  <button type="button" class="btn" data-bs-dismiss="modal">Submit</button>
+                  <button type="submit" class="btn" data-bs-dismiss="modal">Submit</button>
                 </div>
               </form>
             </div>

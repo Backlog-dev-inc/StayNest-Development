@@ -134,6 +134,23 @@ app.delete(
   }),
 );
 
+// Review: post route
+app.post(
+  "/listings/:id/review",
+  wrapAsync(async (req, res) => {
+    let newReview = new Review(req.body.review);
+    let listing = await Listing.findById(req.params.id).catch((err) => {
+      console.log(err);
+      throw new servErr(404, "Page Not Found");
+    });
+
+    await newReview.save();
+    listing.reviews.push(newReview);
+    await listing.save();
+    res.send("review added");
+  }),
+);
+
 app.all("/{*splat}", (req, res) => {
   throw new servErr(404, "Page Not Found");
 });
