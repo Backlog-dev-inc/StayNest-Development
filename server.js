@@ -8,33 +8,12 @@ const override = require("method-override");
 const ejsMate = require("ejs-mate");
 const servErr = require("./utils/servErr.js");
 const wrapAsync = require("./utils/wrapAsync.js");
-const listingSchema = require("./schema.js");
+const validation = require("./utils/validate.js");
 
 // Connect to the StayNest MongoDB database.
 async function main() {
   await mongoose.connect("mongodb://127.0.0.1:27017/StayNest");
 }
-const validateDB = (req, res, next) => {
-  dbReady
-    .then((connected) => {
-      if (connected) {
-        next();
-      } else {
-        next(new servErr());
-      }
-    })
-    .catch(next);
-};
-
-const schemaValidate = (req, res, next) => {
-  let { error } = listingSchema.validate(req.body);
-  if (error) {
-    console.log(error);
-    throw new servErr(400, error.message);
-  } else {
-    next();
-  }
-};
 
 // Configure the template engine and directory used for view files.
 app.set("view engine", "ejs");
@@ -45,7 +24,6 @@ app.use(express.static(path.join(__dirname, "public")));
 // Parse form data and allow HTML forms to submit PUT and DELETE requests.
 app.use(express.urlencoded({ extended: true }));
 app.use(override("_method"));
-app.use(validateDB);
 
 // Listing: index route
 app.get(
@@ -64,7 +42,7 @@ app.get("/listings/new", (req, res) => {
 // Listing: create route
 app.post(
   "/listings/create",
-  schemaValidate,
+  validation.listing,
   wrapAsync(async (req, res, next) => {
     let newListing = new Listing(req.body.listing);
     await newListing.save();
@@ -75,6 +53,7 @@ app.post(
 // Listing: show route
 app.get(
   "/listings/:id",
+  validation.id,
   wrapAsync(async (req, res, next) => {
     let listing = await Listing.findById(req.params.id);
     if (!listing) {
@@ -87,6 +66,7 @@ app.get(
 // Listing: edit route
 app.get(
   "/listings/edit/:id",
+  validation.id,
   wrapAsync(async (req, res, next) => {
     let listing = await Listing.findById(req.params.id);
     if (!listing) {
@@ -99,7 +79,7 @@ app.get(
 // Listing: update route
 app.put(
   "/listings/update/:id",
-  schemaValidate,
+  validation.id,
   wrapAsync(async (req, res, next) => {
     let updatedListing = await Listing.findByIdAndUpdate(
       req.params.id,
@@ -112,13 +92,14 @@ app.put(
     if (!updatedListing) {
       throw servErr(404, "Page Not Found");
     }
-    res.redirect(`/listings/${id}`);
+    res.redirect(`/listings/${req.params.id}`);
   }),
 );
 
 // Listing: delete route
 app.delete(
   "/listings/delete/:id",
+  validation.id,
   wrapAsync(async (req, res, next) => {
     let deletedListing = await Listing.findByIdAndDelete(req.params.id);
     if (!deletedListing) {
@@ -131,12 +112,14 @@ app.delete(
 // Review: post route
 app.post(
   "/listings/:id/review",
+  validation.id,
+  validation.review,
   wrapAsync(async (req, res) => {
-    let newReview = new Review(req.body.review);
     let listing = await Listing.findById(req.params.id);
     if (!listing) {
       throw new servErr(404, "Page Not Found");
     }
+    let newReview = new Review(req.body.review);
 
     await newReview.save();
     listing.reviews.push(newReview);
@@ -149,27 +132,15 @@ app.all("/{*splat}", (req, res) => {
   throw new servErr(404, "Page Not Found");
 });
 
-app.use((err, req, res, next) => {
-  let { statusCode = 500, message } = err;
-  console.log(message);
-  if (statusCode == 404) {
-    message =
-      "The page you're looking for doesn't exist or might have been moved.";
-  } else if (statusCode == 500) {
-    message = "Something unexpected happened on our side.";
-  }
-  res.status(statusCode).render("listings/error.ejs", { statusCode, message });
-});
+app.use(validation.error);
 
 // Start the server and listen for incoming requests.
-const dbReady = main()
+main()
   .then(() => {
     console.log("connected to DB");
-    return true;
   })
   .catch((err) => {
     console.log(`DB connection failed: ${err.message}`);
-    return false;
   });
 
 app.listen(3300, "0.0.0.0", () => {
